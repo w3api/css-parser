@@ -1,12 +1,12 @@
 import requests, os
 from bs4 import BeautifulSoup
-#from elementos import ElementoHTML
+from elementos import ElementoCSS
 #import writer, json
 
 
 
 # Se crea una página de resumen por años.
-URLSELECTORES = "https://www.w3.org/TR/css-2020/"
+URLBASE = "https://www.w3.org/TR/css-2020/"
 
 
 def limpiar(cadena):
@@ -15,9 +15,9 @@ def limpiar(cadena):
 
 def todos_los_elementos():
 
-    page = requests.get(URLSELECTORES)
+    page = requests.get(URLBASE)
     soup = BeautifulSoup(page.content, 'html5lib')
- 
+
     ## Selectores
     h3 = soup.find("h3", id="selectors")
     elementos = h3.find_next_sibling("div")
