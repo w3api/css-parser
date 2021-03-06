@@ -23,6 +23,7 @@ def todos_los_elementos():
     elementos = h3.find_next_sibling("div")
     lista = elementos.find_next("ul")
     selectores = lista.find_all("li")
+    selectoresDict = set()  
 
     print ("Hay " + str(len(selectores)) + " Selectores CSS")
 
@@ -30,7 +31,15 @@ def todos_los_elementos():
         s = limpiar(selector.text)
         s = s.replace("in css2","").replace("in selectors-3","")
         if (s!=""):
-            print(s)
+            nombre = s.replace(":","").replace("()","")
+            
+            if nombre not in selectoresDict:
+                selectoresDict.add(nombre)
+                e = ElementoCSS()
+                e.nombre = nombre
+                e.add_sintaxis(s)
+            
+                #print(s)
 
     ##Reglas
     h3 = soup.find("h3", id="at-rules")
