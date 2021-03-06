@@ -33,7 +33,19 @@ def todos_los_elementos():
             print(s)
 
     ##Reglas
+    h3 = soup.find("h3", id="at-rules")
+    elementos = h3.find_next_sibling("div")
+    lista = elementos.find_next("ul")
+    propiedades = lista.find_all("li")
 
+    print ("Hay " + str(len(propiedades)) + " Reglas")
+
+    for propiedad in propiedades:
+        p = limpiar(propiedad.text)
+        p = p.replace("in css-conditional-3","").replace("in css2","")
+        if (p!=""):
+            print(p)
+    
     ## Propiedades
     h3 = soup.find("h3", id="properties")
     elementos = h3.find_next_sibling("div")
@@ -48,6 +60,7 @@ def todos_los_elementos():
         if (p!=""):
             print(p)
     
+
 
 # Inicio del Programa
 print ("Analizando la documentación CSS")
