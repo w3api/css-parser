@@ -20,18 +20,15 @@ def doc_JSON(elemento):
     data_json["code"] = ""
     data_json["ldc"] = []
 
-    '''
-    if elemento.atributos:
-        a = []
-        for atributo in elemento.atributos:
-            atributo_json = {}
-            atributo_json["nombre"] = atributo
-            atributo_json["description"] = ""
-            atributo_json["code"] = ""
-            atributo_json["ldc"] = []
-            a.append(atributo_json)
-        data_json["atributos"] = a
-    '''
+    if elemento.valores:
+        v = []
+        for valor in elemento.valores:
+            valor_json = {}
+            valor_json["nombre"] = valor
+            valor_json["description"] = ""
+            v.append(valor_json)
+        data_json["valores"] = v
+
 
     f.write(json.dumps(data_json,indent=4))
     f.close()
@@ -59,6 +56,15 @@ def gen_sintaxis(sintaxis):
          s.append(sin + "\n")
     s.append("~~~\n\n")
     return s
+
+def gen_valores(valores,clave):
+    v = ["## Valores\n"]
+    for valor in valores:
+        v.append("* **" + valor + "**,  ")
+        v.append("{% include w3api/value_description.html propiedad=" + clave + " valor=\"" + valor + "\" %}\n")
+    v.append("\n")
+    return v
+
 
 def gen_ldc(clave):
     ldc = ["## Artículos\n",
@@ -114,6 +120,9 @@ def doc_elementoCSS(e):
 
     sintaxis = gen_sintaxis(e.sintaxis)
     f.writelines(sintaxis)
+
+    valores = gen_valores(e.valores,"site.data." + jsonsource)
+    f.writelines(valores)
 
     ejemplo = gen_ejemplo("site.data." + jsonsource)
     f.writelines(ejemplo)

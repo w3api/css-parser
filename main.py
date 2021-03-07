@@ -114,7 +114,7 @@ def todos_los_elementos():
             e.add_sintaxis(p + " : " + valores)
             e.add_categoria("propiedad css")
             for parametro in parametros:
-                e.add_parametro(parametro)
+                e.add_valor(parametro)
 
             writer.doc_elementoCSS(e)
     

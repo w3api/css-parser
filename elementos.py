@@ -4,14 +4,14 @@ class ElementoCSS:
     sintaxis = []
     categorias = []
     versiones = []
-    parametros = set()
+    valores = set()
     
     def __init__(self):
         self.nombre = ""
         self.sintaxis = []
         self.categorias = []
         self.versiones = []
-        self.parametros = set()
+        self.valores = set()
 
     def nombre(self,nombre):
         self.nombre = nombre
@@ -25,8 +25,8 @@ class ElementoCSS:
     def add_version(self,version):
         self.versiones.append(version)
 
-    def add_parametro(self,parametro):
-        self.parametros.add(parametro)
+    def add_valor(self,valor):
+        self.valores.add(valor)
 
 
     def toString(self):
@@ -37,9 +37,9 @@ class ElementoCSS:
         print("Categorias: ")
         for categoria in self.categorias:
             print(">> " + sintaxis)
-        print("Parametros: ")
-        for parametro in self.parametros:
-            print(">> " + parametro)
+        print("Valores: ")
+        for valor in self.valores:
+            print(">> " + valor)
         print("Versiones: ")
         for version in self.versiones:
             print(">> " + version)
