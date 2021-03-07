@@ -8,9 +8,38 @@ from elementos import ElementoCSS
 # Se crea una página de resumen por años.
 URLBASE = "https://www.w3.org/TR/css-2020/"
 
+def limpiar_parametros(str):
+    cadena = str.replace("?","").replace("<","").replace(">","").replace("[","").replace("]","").replace("#","").replace("0,∞","").replace("{1,2}","").replace("{1,4}","").replace("&&","").replace("/","").replace("\'","").replace(",","").replace("+","").replace("*","").replace("’","").replace("‘","").replace("{23}","").replace("{03}","").replace("1∞","").replace("|","")
+    return limpiar(cadena)
 
 def limpiar(cadena):
     return " ".join(cadena.split())
+
+def get_valores(url,propiedad):
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html5lib')
+
+    # La documentación moderna lo tiene en una tabla
+    tabla = soup.find("table", {"data-link-for-hint":propiedad})
+    if tabla:
+        valor = tabla.find("td", {"class":"prod"})
+        valor = limpiar(valor.text)
+    else:
+        # Lo buscamos por dfn con id="propdef-nombrepropiedad"
+        dfn = soup.find("dfn", id="propdef-"+propiedad)
+        if dfn:
+            valor = dfn.find_next("td")
+            valor = limpiar(valor.text)
+
+            # En algunos casos no hay th-td, si no que es td-td
+            if valor == "Value:":
+                valor = dfn.find_next("td").find_next("td")
+                valor = limpiar(valor.text)
+            
+        else:
+            return ""
+
+    return valor
 
 
 def todos_los_elementos():
@@ -38,8 +67,7 @@ def todos_los_elementos():
                 e = ElementoCSS()
                 e.nombre = nombre
                 e.add_sintaxis(s)
-            
-                #print(s)
+                e.add_categoria("selector css")
 
     ##Reglas
     h3 = soup.find("h3", id="at-rules")
@@ -64,17 +92,26 @@ def todos_los_elementos():
     print ("Hay " + str(len(propiedades)) + " Propiedades")
 
     for propiedad in propiedades:
+        link = propiedad.find("a").get("href")        
         p = limpiar(propiedad.text)
-        p = p.replace("in css-align-3","").replace("in css-flexbox-1","").replace("in css2","").replace("in css-speech-1","").replace("in css-multicol-1","")
+        p = p.replace("in css-align-3","").replace("in css-flexbox-1","").replace("in css2","").replace("in css-speech-1","").replace("in css-multicol-1","").strip()
         if (p!=""):
-            print(p)
-    
+            # Recupero los valores
+            valores = get_valores(link,p)
+            parametros = limpiar_parametros(valores).split()
 
+            e = ElementoCSS()
+            e.nombre = p
+            e.add_sintaxis(s + ":" + valores)
+            e.add_categoria("propiedad css")
+            for parametro in parametros:
+                e.add_parametro(parametro)
+    
 
 # Inicio del Programa
 print ("Analizando la documentación CSS")
 todos_los_elementos()
 
-
+#print (get_valores("https://drafts.csswg.org/css-fonts-3/#propdef-font","font"))
 
 
