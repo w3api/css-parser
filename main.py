@@ -41,7 +41,6 @@ def get_valores(url,propiedad):
 
     return valor
 
-
 def todos_los_elementos():
 
     page = requests.get(URLBASE)
@@ -57,7 +56,7 @@ def todos_los_elementos():
     print ("Hay " + str(len(selectores)) + " Selectores CSS")
 
     for selector in selectores:
-        s = limpiar(selector.text)
+        s = limpiar(selector.text).strip()
         s = s.replace("in css2","").replace("in selectors-3","")
         if (s!=""):
             nombre = s.replace(":","").replace("()","")
@@ -73,15 +72,23 @@ def todos_los_elementos():
     h3 = soup.find("h3", id="at-rules")
     elementos = h3.find_next_sibling("div")
     lista = elementos.find_next("ul")
-    propiedades = lista.find_all("li")
+    reglas = lista.find_all("li")
+    reglasDict = set()  
 
-    print ("Hay " + str(len(propiedades)) + " Reglas")
+    print ("Hay " + str(len(reglas)) + " Reglas")
 
-    for propiedad in propiedades:
-        p = limpiar(propiedad.text)
-        p = p.replace("in css-conditional-3","").replace("in css2","")
-        if (p!=""):
-            print(p)
+    for regla in reglas:
+        r = limpiar(regla.text).strip()
+        r = r.replace("in css-conditional-3","").replace("in css2","")
+        if (r!=""):
+            nombre = r.replace("@","").strip()
+            
+            if nombre not in reglasDict:
+                reglasDict.add(nombre)
+                e = ElementoCSS()
+                e.nombre = nombre
+                e.add_sintaxis(r)
+                e.add_categoria("regla css")
     
     ## Propiedades
     h3 = soup.find("h3", id="properties")
