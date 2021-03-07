@@ -1,9 +1,7 @@
 import requests, os
 from bs4 import BeautifulSoup
 from elementos import ElementoCSS
-#import writer, json
-
-
+import writer
 
 # Se crea una página de resumen por años.
 URLBASE = "https://www.w3.org/TR/css-2020/"
@@ -56,8 +54,8 @@ def todos_los_elementos():
     print ("Hay " + str(len(selectores)) + " Selectores CSS")
 
     for selector in selectores:
-        s = limpiar(selector.text).strip()
-        s = s.replace("in css2","").replace("in selectors-3","")
+        s = limpiar(selector.text)
+        s = s.replace("in css2","").replace("in selectors-3","").strip()
         if (s!=""):
             nombre = s.replace(":","").replace("()","")
             
@@ -67,6 +65,8 @@ def todos_los_elementos():
                 e.nombre = nombre
                 e.add_sintaxis(s)
                 e.add_categoria("selector css")
+
+                writer.doc_elementoCSS(e)
 
     ##Reglas
     h3 = soup.find("h3", id="at-rules")
@@ -78,8 +78,8 @@ def todos_los_elementos():
     print ("Hay " + str(len(reglas)) + " Reglas")
 
     for regla in reglas:
-        r = limpiar(regla.text).strip()
-        r = r.replace("in css-conditional-3","").replace("in css2","")
+        r = limpiar(regla.text)
+        r = r.replace("in css-conditional-3","").replace("in css2","").strip()
         if (r!=""):
             nombre = r.replace("@","").strip()
             
@@ -89,6 +89,8 @@ def todos_los_elementos():
                 e.nombre = nombre
                 e.add_sintaxis(r)
                 e.add_categoria("regla css")
+
+                writer.doc_elementoCSS(e)
     
     ## Propiedades
     h3 = soup.find("h3", id="properties")
@@ -109,10 +111,12 @@ def todos_los_elementos():
 
             e = ElementoCSS()
             e.nombre = p
-            e.add_sintaxis(s + ":" + valores)
+            e.add_sintaxis(p + " : " + valores)
             e.add_categoria("propiedad css")
             for parametro in parametros:
                 e.add_parametro(parametro)
+
+            writer.doc_elementoCSS(e)
     
 
 # Inicio del Programa

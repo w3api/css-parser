@@ -20,6 +20,7 @@ def doc_JSON(elemento):
     data_json["code"] = ""
     data_json["ldc"] = []
 
+    '''
     if elemento.atributos:
         a = []
         for atributo in elemento.atributos:
@@ -30,24 +31,7 @@ def doc_JSON(elemento):
             atributo_json["ldc"] = []
             a.append(atributo_json)
         data_json["atributos"] = a
-
-    f.write(json.dumps(data_json,indent=4))
-    f.close()
-
-def doc_JSON_Globales(nombre):
-
-    basepath = nombre
-
-    if not os.path.exists(__OUTJSON__ + nombre[0]):
-        os.makedirs(__OUTJSON__ + nombre[0])
-
-    # Clases como AbstractDocument.AttributeContext se generan en un directorio
-    f = open(__OUTJSON__ + nombre[0] + "/" + basepath + ".json","w")
-
-    data_json = {}
-    data_json["description"] = ""
-    data_json["code"] = ""
-    data_json["ldc"] = []
+    '''
 
     f.write(json.dumps(data_json,indent=4))
     f.close()
@@ -60,36 +44,17 @@ def gen_cabecera(nombre,path,clave,tags):
                 "permalink: " + path + "\n",
                 "date: " + str(datetime.now()) + "\n",
                 "key: " + clave + "\n",
-                "category: html" + "\n",
+                "category: css" + "\n",
                 "tags: " + str(tags) + "\n",
                 "sidebar: " + "\n",
-                "  nav: html" + "\n",
-                "---" + "\n\n"]
-    return c
-
-def gen_cabecera_tag(tipo, nombre, titulo):
-
-    c = ["---" + "\n",
-                "title: \"" + titulo + " " + nombre + "\"\n",
-                "layout: tag\n",
-                "permalink: /html/tag/" + nombre + "/\n",
-                "date: " + str(datetime.now()) + "\n",
-                "key: " + tipo + nombre + "\n",
-                "sidebar: " + "\n",
-                "  nav: java" + "\n",
-                "aside: " + "\n",
-                "  toc: true" + "\n",
-                "pagination: " + "\n",
-                "  enabled: true" + "\n",
-                "  tag: \"" + nombre + "\"\n",
-                "  permalink: /:num/" + "\n",
+                "  nav: css" + "\n",
                 "---" + "\n\n"]
     return c
 
 def gen_sintaxis(sintaxis):
 
     s = ["## Sintaxis\n",
-          "~~~html\n"]
+          "~~~css\n"]
     for sin in sintaxis:
          s.append(sin + "\n")
     s.append("~~~\n\n")
@@ -109,7 +74,7 @@ def gen_ldc(clave):
 def gen_ejemplo(base):
 
     e = ["## Ejemplo\n"
-         "~~~java\n",
+         "~~~css\n",
          "{{ " + base + ".code}}\n",
          "~~~\n\n",
          ]
@@ -122,20 +87,7 @@ def gen_descripcion(base):
     return d
 
 
-
-def gen_clasepadre(nombre,path):
-    cp = ["## Elemento Padre\n",
-          "[" + nombre + "](/html/"+ path.replace(".","/") + "/)\n\n"]
-
-    return cp
-
-def gen_infometodo(clave,tipo,valor):
-    bm = ["{% include w3api/datos.html clase=site.data." + clave + "." + tipo + " valor=\"" + valor +"\" %}\n\n"]
-    return bm
-
-
 def doc_elementoCSS(e):
-
 
     basepath = e.nombre
 
@@ -149,7 +101,7 @@ def doc_elementoCSS(e):
 
     tags = []
     for categoria in e.categorias:
-        tag.append(categoria)
+        tags.append(categoria)
 
     for version in e.versiones:
         tags.append(version)
